@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: webbar-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: webbar-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ENVIRONMENT
+        value: production
+      - key: ADMIN_PHONE
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_NICKNAME
+        value: 系统管理员
+      - key: CORS_ORIGINS
+        value: https://REPLACE-WITH-YOUR-NETLIFY-SITE.netlify.app
+databases:
+  - name: webbar-db
+    plan: basic-256mb
+    databaseName: webbar
+    user: webbar_user
